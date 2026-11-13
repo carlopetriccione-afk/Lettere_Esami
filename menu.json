@@ -1,0 +1,84 @@
+{
+  "titolo": "I miei esami",
+  "sottotitolo": "Lettere, primo anno · Università di Macerata · a.a. 2026/2027",
+  "voci": [
+    {
+      "titolo": "Istituzioni di letteratura italiana",
+      "descrizione": "prof.ssa Laura Melosi",
+      "voci": [
+        {
+          "titolo": "Mappe di studio",
+          "voci": [
+            {
+              "titolo": "Petrarca e il Canzoniere",
+              "link": "https://claude.ai/artifact/CFTKr2KXPZ6oumwzq3tVdQ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titolo": "Letteratura italiana – prova scritta",
+      "descrizione": "prof.ssa Laura Melosi",
+      "voci": []
+    },
+    {
+      "titolo": "Letteratura latina",
+      "descrizione": "prof.ssa Elisa Della Calce",
+      "voci": []
+    },
+    {
+      "titolo": "Storia romana",
+      "descrizione": "prof.ssa Simona Antolini",
+      "voci": [
+        {
+          "titolo": "Età repubblicana e imperiale",
+          "link": "https://carlopetriccione-afk.github.io/Lettere_storiaromana/"
+        }
+      ]
+    },
+    {
+      "titolo": "Storia contemporanea",
+      "descrizione": "prof. Riccardo Piccioni",
+      "voci": []
+    },
+    {
+      "titolo": "Storia dell'arte contemporanea",
+      "descrizione": "prof.ssa Susanne Adina Meyer",
+      "voci": [
+        {
+          "titolo": "Visita a Palazzo Buonaccorsi",
+          "voci": [
+            {
+              "titolo": "Presentazione: Paladini, Composizione astratta",
+              "link": "file/Composizione_astratta_Paladini.pdf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titolo": "Abilità informatiche e telematiche",
+      "descrizione": "prof. Fabio Curzi · Digital Humanities",
+      "voci": [
+        {
+          "titolo": "Esercitazione TEI: Leopardi, Pensiero IV",
+          "voci": [
+            {
+              "titolo": "Testo su Wikisource",
+              "link": "https://it.wikisource.org/wiki/Pensieri_(Leopardi)/IV"
+            },
+            {
+              "titolo": "File XML corretto",
+              "link": "file/pensiero_IV_corretto.xml"
+            }
+          ]
+        },
+        {
+          "titolo": "Progetto di esame",
+          "link": "https://carlopetriccione-afk.github.io/Lettere_Informatica/"
+        }
+      ]
+    }
+  ]
+}

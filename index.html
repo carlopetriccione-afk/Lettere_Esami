@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>I miei esami</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,600;7..72,700&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: indice ad albero a sinistra (cassetto sul telefono), contenuto della voce aperta a destra.
+   Palette: blu inchiostro e carta fredda, un colore per ciascun esame. */
+:root{
+  --bg:#f4f5f7; --panel:#ffffff; --fg:#1b2230; --muted:#5a6475; --line:#dde1e8; --hover:#eceff4;
+  --accent:#2b4c7e; --accent-soft:#e3eaf5; --danger:#a3312b; --ok:#2f6b3a;
+  --e1:#2b4c7e; --e2:#5b6fb0; --e3:#8a3b3b; --e4:#a0662a; --e5:#2f6b5f; --e6:#7a4a8c; --e7:#3b7a8f;
+  --pdf:#b3261e; --doc:#2b579a; --ppt:#c4501f; --xls:#217346; --web:#4a5568; --xml:#6b4f9e; --altro:#5a6475;
+  --display:"Literata", Georgia, "Times New Roman", serif;
+  --body:"Public Sans", "Segoe UI", Arial, sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#12161d; --panel:#1a1f28; --fg:#e6e9ef; --muted:#9aa3b2; --line:#2c3340; --hover:#232a35;
+  --accent:#8fb0e6; --accent-soft:#22314a; --danger:#e58a83; --ok:#86c493;
+  --e1:#8fb0e6; --e2:#a4b3ea; --e3:#e09a9a; --e4:#e0b07a; --e5:#7fc4b5; --e6:#c49ad6; --e7:#86c6d8;
+  --pdf:#ef8a83; --doc:#8fb3ef; --ppt:#f0a07a; --xls:#7fcf9b; --web:#b4bdcb; --xml:#bba3e6; --altro:#9aa3b2;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#12161d; --panel:#1a1f28; --fg:#e6e9ef; --muted:#9aa3b2; --line:#2c3340; --hover:#232a35;
+  --accent:#8fb0e6; --accent-soft:#22314a; --danger:#e58a83; --ok:#86c493;
+  --e1:#8fb0e6; --e2:#a4b3ea; --e3:#e09a9a; --e4:#e0b07a; --e5:#7fc4b5; --e6:#c49ad6; --e7:#86c6d8;
+  --pdf:#ef8a83; --doc:#8fb3ef; --ppt:#f0a07a; --xls:#7fcf9b; --web:#b4bdcb; --xml:#bba3e6; --altro:#9aa3b2;
+  color-scheme:dark }
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5}
+button,input{font:inherit;color:inherit}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.app{display:grid;grid-template-columns:320px minmax(0,1fr);min-height:100%}
+header.top{grid-column:1/-1;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  padding-block:14px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  border-bottom:1px solid var(--line);background:var(--panel)}
+.brand{display:flex;flex-direction:column;min-width:0;margin-right:auto}
+.brand h1{font-family:var(--display);font-weight:700;font-size:24px;margin:0;line-height:1.15;cursor:pointer}
+.brand p{margin:0;color:var(--muted);font-size:13.5px}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:7px 12px;cursor:pointer;font-size:14px;font-weight:500;white-space:nowrap}
+.btn:hover{background:var(--hover)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--panel)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.danger{color:var(--danger);border-color:var(--danger)}
+.btn.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.btn.small{padding:4px 9px;font-size:13px}
+.menu-toggle{display:none}
+
+aside.side{border-right:1px solid var(--line);background:var(--panel);padding:14px 10px 30px;overflow:auto}
+.search{width:100%;padding:8px 11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);margin-bottom:10px}
+ul.tree{list-style:none;margin:0;padding:0}
+ul.tree ul{list-style:none;margin:0;padding:0 0 0 16px;border-left:1px solid var(--line);margin-left:11px}
+.node{display:flex;align-items:center;gap:4px;border-radius:6px;min-width:0}
+.node:hover{background:var(--hover)}
+.node.current{background:var(--accent-soft)}
+.caret{width:22px;height:26px;border:0;background:none;cursor:pointer;flex:none;color:var(--muted);display:grid;place-items:center;padding:0}
+.caret svg{transition:transform .15s}
+.caret.open svg{transform:rotate(90deg)}
+.caret.nokids{visibility:hidden}
+.node-label{flex:1;min-width:0;border:0;background:none;text-align:left;cursor:pointer;padding:4px 6px 4px 0;font-size:14.5px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--fg)}
+.node.top > .node-label{font-weight:600}
+.dot{width:9px;height:9px;border-radius:50%;flex:none}
+.mini{font-size:10.5px;font-weight:600;letter-spacing:.04em;padding:1px 5px;border-radius:4px;flex:none;color:var(--panel)}
+
+main{padding-block:26px 60px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));min-width:0}
+.wrap{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.crumbs{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:13.5px;color:var(--muted)}
+.crumbs button{border:0;background:none;padding:2px 4px;color:var(--accent);cursor:pointer;border-radius:4px}
+.crumbs button:hover{text-decoration:underline}
+h2.title{font-family:var(--display);font-weight:600;font-size:clamp(26px,4vw,34px);line-height:1.15;margin:0;text-wrap:balance}
+.desc{color:var(--muted);margin:-8px 0 0}
+.banner{border:1px solid var(--accent);background:var(--accent-soft);border-radius:10px;padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.banner p{margin:0;flex:1 1 280px;font-size:14.5px}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:6px;border-top:4px solid var(--c);min-width:0}
+.card:hover{background:var(--hover)}
+.card .n{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.card h3{font-family:var(--display);font-size:19px;font-weight:600;margin:0;line-height:1.2}
+.card .meta{font-size:13.5px;color:var(--muted)}
+
+ul.items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.item{background:var(--panel);border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;gap:12px;padding:11px 14px;min-width:0}
+.item.folder{cursor:pointer}
+.item:hover{background:var(--hover)}
+.badge{width:46px;height:34px;border-radius:7px;display:grid;place-items:center;font-size:11.5px;font-weight:700;letter-spacing:.05em;color:var(--panel);flex:none}
+.badge.folder{background:var(--accent-soft);color:var(--accent)}
+.item-main{flex:1;min-width:0;display:flex;flex-direction:column}
+.item-main a,.item-main .t{font-weight:600;text-decoration:none;color:var(--fg);overflow-wrap:anywhere}
+.item-main a:hover{text-decoration:underline}
+.item-main small{color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+.tools{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.icon-btn{border:1px solid var(--line);background:var(--panel);border-radius:6px;width:32px;height:30px;cursor:pointer;display:grid;place-items:center;font-size:14px}
+.icon-btn:hover{background:var(--hover)}
+.icon-btn:disabled{opacity:.35;cursor:default}
+.empty{border:1px dashed var(--line);border-radius:10px;padding:22px;text-align:center;color:var(--muted)}
+
+.form{background:var(--panel);border:1px solid var(--accent);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.form h4{margin:0;font-size:16px}
+.form label{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:500}
+.form input{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.form .hint{font-size:12.5px;color:var(--muted);font-weight:400}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:14px;color:var(--danger)}
+textarea.json{width:100%;min-height:220px;font:12.5px/1.45 ui-monospace,Consolas,monospace;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);padding:10px}
+.legend{display:flex;flex-wrap:wrap;gap:8px;font-size:12.5px;color:var(--muted);align-items:center}
+.toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom, 0px));left:50%;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:9px 16px;border-radius:8px;font-size:14px;z-index:50}
+
+@media (max-width:820px){
+  .app{grid-template-columns:1fr}
+  .menu-toggle{display:inline-block}
+  aside.side{position:fixed;inset:0 auto 0 0;width:min(86vw,340px);z-index:30;transform:translateX(-102%);transition:transform .2s;
+    padding-top:calc(14px + env(safe-area-inset-top, 0px));padding-left:max(10px, env(safe-area-inset-left, 0px))}
+  aside.side.open{transform:none;box-shadow:0 0 0 100vmax rgba(0,0,0,.35)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <button class="btn menu-toggle" id="menuToggle" aria-controls="side" aria-expanded="false">☰ Menu</button>
+    <div class="brand"><h1 id="siteTitle">I miei esami</h1><p id="siteSub"></p></div>
+    <button class="btn" id="editToggle" aria-pressed="false">✎ Modifica</button>
+  </header>
+  <aside class="side" id="side" aria-label="Indice">
+    <input class="search" id="search" type="search" placeholder="Cerca nel menu…" aria-label="Cerca nel menu">
+    <ul class="tree" id="tree"></ul>
+  </aside>
+  <main><div class="wrap" id="view"></div></main>
+</div>
+
+<script>
+/* ===== Contenuto di riserva: usato solo se menu.json non si può leggere (es. pagina aperta dal disco) ===== */
+const FALLBACK = {"titolo":"I miei esami","sottotitolo":"Lettere, primo anno · Università di Macerata · a.a. 2026/2027","voci":[
+ {"titolo":"Istituzioni di letteratura italiana","descrizione":"prof.ssa Laura Melosi","voci":[]},
+ {"titolo":"Letteratura italiana – prova scritta","descrizione":"prof.ssa Laura Melosi","voci":[]},
+ {"titolo":"Letteratura latina","descrizione":"prof.ssa Elisa Della Calce","voci":[]},
+ {"titolo":"Storia romana","descrizione":"prof.ssa Simona Antolini","voci":[]},
+ {"titolo":"Storia contemporanea","descrizione":"prof. Riccardo Piccioni","voci":[]},
+ {"titolo":"Storia dell'arte contemporanea","descrizione":"prof.ssa Susanne Adina Meyer","voci":[]},
+ {"titolo":"Abilità informatiche e telematiche","descrizione":"prof. Fabio Curzi · Digital Humanities","voci":[]}]};
+
+const DRAFT_KEY = 'esami-menu-bozza';
+const OPEN_KEY = 'esami-menu-aperti';
+const TYPES = {
+  pdf:{label:'PDF',color:'--pdf',name:'Documento PDF'}, doc:{label:'DOC',color:'--doc',name:'Documento Word'},
+  ppt:{label:'PPT',color:'--ppt',name:'Presentazione PowerPoint'}, xls:{label:'XLS',color:'--xls',name:'Foglio Excel'},
+  xml:{label:'XML',color:'--xml',name:'File XML/TEI'}, web:{label:'WEB',color:'--web',name:'Sito web'},
+  img:{label:'IMG',color:'--altro',name:'Immagine'}, media:{label:'A/V',color:'--altro',name:'Audio o video'},
+  altro:{label:'FILE',color:'--altro',name:'File'}
+};
+const EXAM_COLORS = ['--e1','--e2','--e3','--e4','--e5','--e6','--e7'];
+
+let data = null, published = null, path = [], editing = false, dirty = false, form = null, confirmDel = null, query = '';
+let openSet = new Set();
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const isFolder = n => Array.isArray(n.voci);
+function store(k, v){ try{ v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v) }catch(e){} }
+function load(k){ try{ return localStorage.getItem(k) }catch(e){ return null } }
+
+function typeOf(link){
+  if(!link) return 'altro';
+  let p = link.split('#')[0].split('?')[0].toLowerCase();
+  const ext = (p.match(/\.([a-z0-9]+)$/) || [])[1] || '';
+  if(ext === 'pdf') return 'pdf';
+  if(['doc','docx','odt','rtf'].includes(ext)) return 'doc';
+  if(['ppt','pptx','odp','key'].includes(ext)) return 'ppt';
+  if(['xls','xlsx','ods','csv'].includes(ext)) return 'xls';
+  if(['xml','tei'].includes(ext)) return 'xml';
+  if(['jpg','jpeg','png','gif','webp','svg'].includes(ext)) return 'img';
+  if(['mp3','mp4','m4a','wav','mov','webm'].includes(ext)) return 'media';
+  if(/^https?:\/\//.test(link) || ['html','htm',''].includes(ext)) return 'web';
+  return 'altro';
+}
+function where(link){
+  if(/^https?:\/\//.test(link)){ try{ return new URL(link).hostname.replace(/^www\./,'') }catch(e){ return link } }
+  return 'nel sito: ' + link;
+}
+function nodeAt(p){ let n = data; for(const i of p){ n = n.voci[i]; if(!n) return null } return n }
+function hashFor(p){ return p.length ? '#v-' + p.join('-') : '#' }
+function pathFromHash(){
+  const m = location.hash.match(/^#v-([\d-]+)$/);
+  if(!m) return [];
+  const p = m[1].split('-').map(Number);
+  return nodeAt(p) && isFolder(nodeAt(p)) ? p : [];
+}
+function countLinks(n){ return isFolder(n) ? n.voci.reduce((a,c)=>a+countLinks(c),0) : 1 }
+function examColor(p){ return 'var(' + EXAM_COLORS[(p[0] ?? 0) % EXAM_COLORS.length] + ')' }
+
+/* ===== Caricamento ===== */
+async function init(){
+  try{ const r = await fetch('menu.json', {cache:'no-store'}); if(!r.ok) throw 0; published = await r.json() }
+  catch(e){ published = FALLBACK }
+  const draft = load(DRAFT_KEY);
+  if(draft){ try{ data = JSON.parse(draft); dirty = true }catch(e){ data = null } }
+  if(!data) data = structuredClone(published);
+  try{ openSet = new Set(JSON.parse(load(OPEN_KEY) || '[]')) }catch(e){}
+  path = pathFromHash();
+  render();
+}
+window.addEventListener('hashchange', () => { path = pathFromHash(); form = null; confirmDel = null; render(); closeSide() });
+
+function save(){ dirty = true; store(DRAFT_KEY, JSON.stringify(data)); }
+function go(p){ path = p; form = null; confirmDel = null; p.forEach((_,i)=>openSet.add(p.slice(0,i+1).join('-'))); store(OPEN_KEY, JSON.stringify([...openSet]));
+  if(location.hash !== hashFor(p)) history.pushState(null,'',hashFor(p)); render(); closeSide(); $('main').scrollTop = 0; window.scrollTo(0,0) }
+
+/* ===== Albero laterale ===== */
+const CARET = '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function treeHTML(nodes, base){
+  return nodes.map((n,i) => {
+    const p = [...base, i], key = p.join('-');
+    if(isFolder(n)){
+      const open = openSet.has(key) || (query && matchesDeep(n));
+      const kids = n.voci.length;
+      const hidden = query && !matchesDeep(n);
+      if(hidden) return '';
+      return `<li><div class="node ${p.length===1?'top':''} ${key===path.join('-')?'current':''}">
+        <button class="caret ${open?'open':''} ${kids?'':'nokids'}" data-toggle="${key}" aria-label="${open?'Chiudi':'Apri'} ${esc(n.titolo)}" aria-expanded="${open}">${CARET}</button>
+        <button class="node-label" data-go="${key}">${p.length===1?`<span class="dot" style="background:${examColor(p)}"></span>`:''}${esc(n.titolo)}</button></div>
+        ${open && kids ? `<ul>${treeHTML(n.voci, p)}</ul>` : ''}</li>`;
+    }
+    if(query && !n.titolo.toLowerCase().includes(query)) return '';
+    const t = TYPES[typeOf(n.link)];
+    return `<li><div class="node"><span class="caret nokids"></span>
+      <a class="node-label" href="${esc(n.link)}" target="_blank" rel="noopener"><span class="mini" style="background:var(${t.color})">${t.label}</span>${esc(n.titolo)}</a></div></li>`;
+  }).join('');
+}
+function matchesDeep(n){ return n.titolo.toLowerCase().includes(query) || (isFolder(n) && n.voci.some(matchesDeep)) }
+
+/* ===== Vista principale ===== */
+function crumbs(){
+  let out = `<button data-go="">Inizio</button>`;
+  for(let i=0;i<path.length;i++){ const p = path.slice(0,i+1); out += `<span aria-hidden="true">›</span><button data-go="${p.join('-')}">${esc(nodeAt(p).titolo)}</button>` }
+  return `<nav class="crumbs" aria-label="Percorso">${out}</nav>`;
+}
+function banner(){
+  if(!dirty) return '';
+  return `<div class="banner" role="status"><p><strong>Hai modifiche non ancora pubblicate.</strong> Per renderle visibili a tutti scarica <code>menu.json</code> e caricalo su GitHub al posto di quello vecchio.</p>
+    <div class="row"><button class="btn primary small" data-act="download">Scarica menu.json</button><button class="btn small" data-act="showjson">Mostra il testo</button><button class="btn small" data-act="discard">Annulla modifiche</button></div></div>`;
+}
+function itemTools(i, len, n){
+  if(!editing) return '';
+  if(confirmDel === i) return `<div class="confirm">Eliminare${isFolder(n)&&n.voci.length?' anche tutto il contenuto':''}? <button class="btn small danger" data-act="del-yes" data-i="${i}">Elimina</button><button class="btn small" data-act="del-no">No</button></div>`;
+  return `<div class="tools">
+    <button class="icon-btn" data-act="up" data-i="${i}" ${i===0?'disabled':''} aria-label="Sposta su">↑</button>
+    <button class="icon-btn" data-act="down" data-i="${i}" ${i===len-1?'disabled':''} aria-label="Sposta giù">↓</button>
+    <button class="icon-btn" data-act="edit" data-i="${i}" aria-label="Modifica ${esc(n.titolo)}">✎</button>
+    <button class="icon-btn" data-act="del" data-i="${i}" aria-label="Elimina ${esc(n.titolo)}">🗑</button></div>`;
+}
+function formHTML(){
+  if(!form) return '';
+  const n = form.index != null ? nodeAt(path).voci[form.index] : null;
+  const isLink = form.kind === 'link';
+  const what = isLink ? 'collegamento' : (path.length ? 'sottomenu' : 'esame');
+  return `<form class="form" id="itemForm"><h4>${n ? 'Modifica' : 'Nuovo'} ${what}</h4>
+    <label for="fTitle">Titolo<input id="fTitle" required value="${esc(n?.titolo || '')}" placeholder="${isLink?'Es. Programma del corso':'Es. Lezioni'}"></label>
+    ${isLink ? `<label for="fLink">Indirizzo
+      <input id="fLink" required value="${esc(n?.link || '')}" placeholder="https://… oppure file/nomefile.pdf">
+      <span class="hint">Un sito: incolla l'indirizzo completo (https://…). Un tuo file: caricalo nella cartella <b>file</b> del repository e scrivi <b>file/</b> seguito dal nome esatto, es. <b>file/appunti.docx</b>.</span></label>`
+      : `<label for="fDesc">Descrizione <span class="hint">facoltativa, es. nome del docente</span><input id="fDesc" value="${esc(n?.descrizione || '')}"></label>`}
+    <div class="row"><button class="btn primary" type="submit">${n ? 'Salva' : 'Aggiungi'}</button><button class="btn" type="button" data-act="cancel">Annulla</button></div></form>`;
+}
+function render(){
+  $('#siteTitle').textContent = data.titolo || 'I miei esami';
+  $('#siteSub').textContent = data.sottotitolo || '';
+  document.title = data.titolo || 'I miei esami';
+  $('#tree').innerHTML = treeHTML(data.voci, []);
+  const v = $('#view');
+  if(query){ v.innerHTML = searchView(); return }
+  const node = nodeAt(path);
+  const kids = node.voci;
+  let html = banner();
+  if(!path.length){
+    html += `<h2 class="title">Il mio primo anno</h2><p class="desc">Scegli un esame per aprirne i materiali.${editing?' In modalità modifica puoi rinominare, riordinare o aggiungere esami.':''}</p>`;
+    if(editing){
+      html += formHTML() + `<ul class="items">${kids.map((n,i)=>`<li class="item folder" data-go="${i}"><span class="badge folder" style="color:${examColor([i])}">${i+1}</span>
+        <div class="item-main"><span class="t">${esc(n.titolo)}</span><small>${esc(n.descrizione||'')}</small></div>${itemTools(i,kids.length,n)}</li>`).join('')}</ul>
+        <div class="row"><button class="btn" data-act="add-folder">+ Nuovo esame</button></div>`;
+    } else {
+      html += `<div class="cards">${kids.map((n,i)=>{ const c = countLinks(n); return `<button class="card" style="--c:${examColor([i])}" data-go="${i}">
+        <span class="n">Esame ${i+1}</span><h3>${esc(n.titolo)}</h3><span class="meta">${esc(n.descrizione||'')}</span><span class="meta">${c ? c + (c===1?' collegamento':' collegamenti') : 'Ancora vuoto'}</span></button>` }).join('')}</div>`;
+    }
+  } else {
+    html += crumbs() + `<h2 class="title">${esc(node.titolo)}</h2>${node.descrizione?`<p class="desc">${esc(node.descrizione)}</p>`:''}`;
+    if(editing) html += `<div class="row"><button class="btn" data-act="add-folder">+ Sottomenu</button><button class="btn" data-act="add-link">+ Collegamento o file</button></div>` + formHTML();
+    if(!kids.length) html += `<div class="empty">Qui non c'è ancora niente.${editing?' Aggiungi un sottomenu o un collegamento con i pulsanti qui sopra.':' Premi <b>✎ Modifica</b> in alto per aggiungere sottomenu, link e file.'}</div>`;
+    else html += `<ul class="items">${kids.map((n,i)=>{
+      if(isFolder(n)){ const c = countLinks(n); return `<li class="item folder" data-go="${[...path,i].join('-')}"><span class="badge folder">▸</span>
+        <div class="item-main"><span class="t">${esc(n.titolo)}</span><small>Sottomenu · ${n.voci.length} ${n.voci.length===1?'voce':'voci'}${c?`, ${c} ${c===1?'collegamento':'collegamenti'}`:''}</small></div>${itemTools(i,kids.length,n)}</li>` }
+      const ty = typeOf(n.link), t = TYPES[ty];
+      return `<li class="item"><span class="badge" style="background:var(${t.color})">${t.label}</span>
+        <div class="item-main"><a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.titolo)}</a><small>${t.name} · ${esc(where(n.link))}</small></div>${itemTools(i,kids.length,n)}</li>` }).join('')}</ul>`;
+  }
+  if(form?.json) html += `<div class="form"><h4>Testo di menu.json</h4><p class="hint" style="margin:0">Se il pulsante di download non funziona, copia questo testo e incollalo nel file menu.json su GitHub.</p>
+    <textarea class="json" id="jsonText" readonly>${esc(JSON.stringify(data,null,2))}</textarea><div class="row"><button class="btn primary small" data-act="copy">Copia</button><button class="btn small" data-act="cancel">Chiudi</button></div></div>`;
+  v.innerHTML = html;
+  const ft = $('#fTitle'); if(ft) ft.focus();
+}
+function searchView(){
+  const hits = [];
+  (function walk(nodes, base){ nodes.forEach((n,i)=>{ const p=[...base,i]; if(n.titolo.toLowerCase().includes(query)) hits.push([n,p]); if(isFolder(n)) walk(n.voci,p) }) })(data.voci, []);
+  const trail = p => p.slice(0,-1).map((_,i)=>nodeAt(p.slice(0,i+1)).titolo).join(' › ') || 'Esami';
+  return `<h2 class="title">Risultati per «${esc(query)}»</h2>` + (hits.length ? `<ul class="items">${hits.map(([n,p])=>{
+    if(isFolder(n)) return `<li class="item folder" data-go="${p.join('-')}"><span class="badge folder">▸</span><div class="item-main"><span class="t">${esc(n.titolo)}</span><small>${esc(trail(p))}</small></div></li>`;
+    const t = TYPES[typeOf(n.link)];
+    return `<li class="item"><span class="badge" style="background:var(${t.color})">${t.label}</span><div class="item-main"><a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.titolo)}</a><small>${esc(trail(p))}</small></div></li>` }).join('')}</ul>`
+    : `<div class="empty">Nessuna voce contiene «${esc(query)}».</div>`);
+}
+
+/* ===== Azioni ===== */
+function toast(msg){ const t = document.createElement('div'); t.className='toast'; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),2200) }
+document.addEventListener('click', e => {
+  const tg = e.target.closest('[data-toggle]');
+  if(tg){ const k = tg.dataset.toggle; openSet.has(k) ? openSet.delete(k) : openSet.add(k); store(OPEN_KEY, JSON.stringify([...openSet])); render(); return }
+  const a = e.target.closest('[data-act]');
+  if(a){ act(a.dataset.act, a.dataset.i != null ? +a.dataset.i : null); return }
+  const g = e.target.closest('[data-go]');
+  if(g && !e.target.closest('a')){ go(g.dataset.go === '' ? [] : g.dataset.go.split('-').map(Number)) }
+});
+function act(name, i){
+  const list = nodeAt(path).voci;
+  switch(name){
+    case 'add-folder': form = {kind:'folder'}; break;
+    case 'add-link': form = {kind:'link'}; break;
+    case 'edit': form = {kind: isFolder(list[i]) ? 'folder' : 'link', index:i}; break;
+    case 'cancel': form = null; break;
+    case 'up': if(i>0){ [list[i-1],list[i]]=[list[i],list[i-1]]; save() } break;
+    case 'down': if(i<list.length-1){ [list[i+1],list[i]]=[list[i],list[i+1]]; save() } break;
+    case 'del': confirmDel = i; break;
+    case 'del-no': confirmDel = null; break;
+    case 'del-yes': list.splice(i,1); confirmDel = null; save(); toast('Voce eliminata'); break;
+    case 'download': download(); return;
+    case 'showjson': form = {json:true}; break;
+    case 'copy': copyJSON(); return;
+    case 'discard': data = structuredClone(published); dirty = false; store(DRAFT_KEY, null); path = []; form = null; toast('Modifiche annullate'); history.replaceState(null,'','#'); break;
+  }
+  render();
+}
+document.addEventListener('submit', e => {
+  if(e.target.id !== 'itemForm') return;
+  e.preventDefault();
+  const list = nodeAt(path).voci;
+  const titolo = $('#fTitle').value.trim(); if(!titolo) return;
+  let n = form.index != null ? list[form.index] : (form.kind === 'link' ? {} : {voci:[]});
+  n.titolo = titolo;
+  if(form.kind === 'link'){ n.link = $('#fLink').value.trim() }
+  else { const d = $('#fDesc').value.trim(); if(d) n.descrizione = d; else delete n.descrizione }
+  if(form.index == null) list.push(n);
+  form = null; save(); render(); toast('Salvato');
+});
+function download(){
+  try{
+    const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'menu.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    toast('menu.json scaricato');
+  }catch(e){ form = {json:true}; render() }
+}
+async function copyJSON(){
+  const ta = $('#jsonText');
+  try{ await navigator.clipboard.writeText(ta.value); toast('Copiato') }
+  catch(e){ ta.focus(); ta.select(); toast('Testo selezionato: premi Ctrl+C') }
+}
+$('#editToggle').addEventListener('click', () => {
+  editing = !editing; form = null; confirmDel = null;
+  $('#editToggle').classList.toggle('on', editing); $('#editToggle').setAttribute('aria-pressed', editing);
+  $('#editToggle').textContent = editing ? '✓ Fine modifica' : '✎ Modifica'; render();
+});
+$('#search').addEventListener('input', e => { query = e.target.value.trim().toLowerCase(); render() });
+$('#siteTitle').addEventListener('click', () => go([]));
+function closeSide(){ $('#side').classList.remove('open'); $('#menuToggle').setAttribute('aria-expanded','false') }
+$('#menuToggle').addEventListener('click', () => { const o = $('#side').classList.toggle('open'); $('#menuToggle').setAttribute('aria-expanded', o) });
+document.addEventListener('keydown', e => { if(e.key === 'Escape'){ closeSide(); if(form||confirmDel!=null){ form=null; confirmDel=null; render() } } });
+
+init();
+</script>
+</body>
+</html>

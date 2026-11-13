@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="https://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+  <teiHeader>
+    <fileDesc>
+      <titleStmt>
+        <title>Pensieri, IV</title>
+        <author>Giacomo Leopardi: autore</author>
+        <respStmt xml:id="studente">
+          <resp>codifica, riconoscimento e collegamento delle entità (verifica)</resp>
+          <name>Carlo Petriccione</name>
+        </respStmt>
+       
+        <respStmt xml:id="copilot">
+          <resp>proposta di riconoscimento delle entità e di identificatori</resp>
+          <name>Copilot Chat, account UniMC, 04/11/2026</name>
+        </respStmt>
+
+
+      </titleStmt>
+      <publicationStmt>
+        <p>Esercitazione del corso di Abilità Informatiche e Telematiche, Università di Macerata, 4 novembre 2026.</p>
+      </publicationStmt>
+      <sourceDesc>
+        <bibl type="trascrizione">
+          <title>Pensieri (Leopardi)/IV</title>, <publisher>Wikisource</publisher>,
+          <ref target="https://it.wikisource.org/wiki/Pensieri_(Leopardi)/IV">https://it.wikisource.org/wiki/Pensieri_(Leopardi)/IV</ref>,
+          licenza CC BY-SA; testo riletto e controllato sulla stampa.
+        </bibl>
+        <bibl type="stampa">
+          <author>Giacomo Leopardi</author>, <title>Pensieri ; Moralisti greci ; Volgarizzamenti e scritti vari</title>,
+          a cura di <editor>Alessandro Donati</editor>, <pubPlace>Bari</pubPlace>, <publisher>Laterza</publisher>, <date when="1932">1932</date>
+          (<title type="series">Scrittori d'Italia</title>), <biblScope unit="page" from="7" to="8">pp. 7-8</biblScope>.
+          Riproduzione fotografica in <ref target="http://www.bibliotecaitaliana.it/testo/si162">Biblioteca Italiana</ref>
+          (Sapienza Università di Roma), scheda <idno type="BibliotecaItaliana">si162</idno>, SBN <idno type="SBN">IT\ICCU\CUB\0368299</idno>.
+        </bibl>
+      </sourceDesc>
+    </fileDesc>
+    <revisionDesc>
+      <change when="2026-11-04" who="#studente">entità proposte da Copilot verificate su VIAF, GeoNames e Wikidata</change>
+    </revisionDesc>
+  </teiHeader>
+  <text>
+    <body>
+      <div>
+        <head>IV.</head>
+        <p>Questo che segue, non è un pensiero, ma un racconto, ch’io pongo qui per isvagamento del lettore. Un mio amico, anzi compagno della mia vita, <persName key="Ranieri, Antonio, 1806?-1888" ref="http://viaf.org/viaf/41882223" cert="high" type="real">Antonio Ranieri</persName>, giovane che, se vive, e se gli uomini non vengono a capo di rendere inutili i doni ch’egli ha dalla natura, presto sará significato abbastanza dal solo nome, abitava meco nel <date when="1831">1831</date> in <placeName key="Florence" ref="http://www.wikidata.org/entity/Q2044" cert="high" resp="#studente">Firenze<precision match="@ref" precision="high" /></placeName>. Una sera di state, passando per <placeName key="via Buia" ref="https://it.wikipedia.org/wiki/Via_dell%27Oriuolo" resp="#studente">via Buia</placeName>, trovò in sul canto, presso alla <placeName key="piazza del Duomo firenze" ref="https://it.wikipedia.org/wiki/Piazza_del_Duomo_(Firenze)" resp="#studente">piazza del Duomo</placeName>, sotto una finestra terrena del <placeName key="palazzo che ora è de’ Riccardi" ref="https://it.wikipedia.org/wiki/Palazzo_Medici_Riccardi" cert="medium" resp="#studente">palazzo che ora è de’ Riccardi<precision match="@ref" precision="medium" /></placeName>, fermata molta gente, che diceva tutta spaventata: ‘Ih, la fantasima!’ E, guardando per la finestra nella stanza, dove non era altro lume che quello che vi batteva dentro da una delle lanterne della cittá, vide egli stesso come un’ombra di donna, che scagliava le braccia di qua e di lá, e nel resto immobile. Ma avendo pel capo altri pensieri, passò oltre, e per quella sera né per tutto il giorno vegnente non si ricordò di quell’incontro. L’altra sera, alla stessa ora, abbattendosi a ripassare dallo stesso luogo, vi trovò raccolta piú moltitudine che la sera innanzi, e udí che ripetevano con lo stesso terrore: ‘Ih, la fantasima!’ E riguardando per entro la finestra, rivide quella stessa ombra, che pure, senza fare altro moto, scoteva le braccia. Era la finestra non molto piú alta da terra che una statura d’uomo; e uno tra la moltitudine che pareva un birro, disse: ‘S’i’avessi qualcuno che mi sostenessi ’n sulle spalle, i’ vi monterei, per guardare che v’è lá drento.’ Al che soggiunse il <persName key="Ranieri, Antonio, 1806?-1888" ref="http://viaf.org/viaf/41882223" cert="high" type="real">Ranieri</persName>: ‘Se voi mi sostenete, monterò io.’ E déttogli da quello: ‘Montate,’ montò su, ponendogli i piedi in sugli omeri, e trovò presso all’inferriata della finestra, disteso in sulla spalliera di una seggiola un grembiale nero, che agitato dal vento, faceva quell’apparenza di braccia che si scagliassero; e sopra la seggiola, appoggiata alla medesima spalliera, una rocca da filare, che pareva il capo dell’ombra: la quale rocca il <persName key="Ranieri, Antonio, 1806?-1888" ref="http://viaf.org/viaf/41882223" cert="high" type="real">Ranieri</persName> presa in mano, mostrò al popolo adunato, che con molto riso si disperse.</p>
+        <p>A che questa storiella? per ricreazione, come ho detto, de’ lettori, e inoltre per un sospetto ch’io ho, che ancora possa essere non inutile alla critica storica ed alla filosofia sapere che nel <date notBefore="1801" notAfter="1900">secolo decimonono</date>, nel bel mezzo di <placeName key="Florence" ref="http://www.wikidata.org/entity/Q2044" cert="high" resp="#studente">Firenze<precision match="@ref" precision="high" /></placeName>, che è la cittá piú culta d’<placeName key="Italian Republic" ref="https://sws.geonames.org/3175395" cert="high" resp="#studente">Italia<precision match="@ref" precision="high" /></placeName>, e dove il popolo in particolare è piú intendente e piú civile, si veggono fantasmi, che sono creduti spiriti, e sono rocche da filare. E gli stranieri si tengano qui di sorridere, come fanno volentieri delle cose nostre; perché troppo è noto che nessuna delle tre grandi nazioni che, come dicono i giornali, marchent à la tête de la civilisation, crede agli spiriti meno dell’italiana.</p>
+      </div>
+    </body>
+  </text>
+</TEI>
